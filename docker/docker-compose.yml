@@ -5,10 +5,10 @@ services:
     image: postgres:15-alpine
     container_name: shared-postgres
     ports:
-      - "55433:5432"
+      - "0.0.0.0:55432:5432"  # <-- QUESTA E' LA RIGA DA CAMBIARE
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin_password
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
       POSTGRES_DB: agenda_db
     volumes:
       - pgdata:/var/lib/postgresql/data
