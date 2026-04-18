@@ -1,0 +1,23 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: calendar-service
+  datasource:
+    url: jdbc:postgresql://localhost:55433/agenda_db?currentSchema=calendar_schema
+    username: admin
+    password: admin_password
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+  flyway:
+    enabled: true
+    default-schema: calendar_schema
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
