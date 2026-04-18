@@ -1,0 +1,23 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: user-service
+  datasource:
+    url: jdbc:postgresql://localhost:55433/agenda_db?currentSchema=user_schema
+    username: admin
+    password: admin_password
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+  flyway:
+    enabled: true
+    default-schema: user_schema
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
