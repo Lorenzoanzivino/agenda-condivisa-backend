@@ -1,0 +1,32 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        # Routing per User Service
+        - id: user-service-route
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/users/**
+
+        # Routing per Calendar Service (Eventi)
+        - id: calendar-events-route
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/events/**
+
+        # Routing per Calendar Service (Inviti)
+        - id: calendar-invites-route
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/invites/**
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
