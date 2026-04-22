@@ -1,0 +1,23 @@
+server:
+  port: 8083
+
+spring:
+  config:
+    import: "optional:file:.env[.properties]"
+  application:
+    name: agent-service
+  ai:
+    openai:
+      base-url: https://generativelanguage.googleapis.com/v1beta/openai/
+      api-key: ${GEMINI_API_KEY}
+      chat:
+        options:
+          # Modello aggiornato alla versione del 2026
+          model: gemini-2.5-flash
+          temperature: 0.7
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
