@@ -12,11 +12,11 @@ public class SecurityConfig {
 
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
-        http
+        return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
-                .authorizeExchange(exchange -> exchange
-                        .anyExchange().permitAll()
-                );
-        return http.build();
+                .authorizeExchange(exchanges -> exchanges
+                        .anyExchange().permitAll() // Permette il transito: la sicurezza è gestita dal JwtAuthenticationFilter
+                )
+                .build();
     }
 }

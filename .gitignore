@@ -7,3 +7,4 @@ target/
 *.war
 /docker/pgdata/
 .env
+.ChaiveAPI.txt
