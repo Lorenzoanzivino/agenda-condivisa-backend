@@ -35,5 +35,4 @@ public class UserGroupMappingController {
         List<UserGroupMappingResponseDto> response = mappingService.getGroupsByUserId(userId);
         return ResponseEntity.ok(response);
     }
-
 }

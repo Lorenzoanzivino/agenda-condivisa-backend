@@ -1,8 +1,10 @@
-package com.catalog.userservice.service.impl;
+package com.catalog.userservice.service;
 
 import com.catalog.userservice.dto.UserRequestDto;
 import com.catalog.userservice.dto.UserResponseDto;
 import com.catalog.userservice.entity.UserEntity;
+import com.catalog.userservice.exception.DuplicateResourceException;
+import com.catalog.userservice.exception.ResourceNotFoundException;
 import com.catalog.userservice.mapper.UserMapper;
 import com.catalog.userservice.repository.UserRepository;
 import com.catalog.userservice.service.UserService;
@@ -24,7 +26,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserResponseDto createUser(UserRequestDto request) {
         if (userRepository.existsByEmail(request.email())) {
-            throw new IllegalArgumentException("Utente con questa email già esistente.");
+            throw new DuplicateResourceException("Utente con questa email già esistente.");
         }
         UserEntity entity = userMapper.toEntity(request);
         UserEntity savedEntity = userRepository.save(entity);
@@ -36,7 +38,7 @@ public class UserServiceImpl implements UserService {
     public UserResponseDto getUserById(String id) {
         return userRepository.findById(id)
                 .map(userMapper::toDto)
-                .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
+                .orElseThrow(() -> new ResourceNotFoundException("Utente non trovato"));
     }
 
     @Override

@@ -1,10 +1,12 @@
-package com.catalog.userservice.service.impl;
+package com.catalog.userservice.service;
 
 import com.catalog.userservice.dto.UserGroupMappingRequestDto;
 import com.catalog.userservice.dto.UserGroupMappingResponseDto;
 import com.catalog.userservice.entity.GroupEntity;
 import com.catalog.userservice.entity.UserEntity;
 import com.catalog.userservice.entity.UserGroupMappingEntity;
+import com.catalog.userservice.exception.DuplicateResourceException;
+import com.catalog.userservice.exception.ResourceNotFoundException;
 import com.catalog.userservice.mapper.UserGroupMappingMapper;
 import com.catalog.userservice.repository.GroupRepository;
 import com.catalog.userservice.repository.UserGroupMappingRepository;
@@ -30,14 +32,14 @@ public class UserGroupMappingServiceImpl implements UserGroupMappingService {
     @Transactional
     public UserGroupMappingResponseDto addUserToGroup(UserGroupMappingRequestDto request) {
         if (mappingRepository.existsByUserIdAndGroupId(request.userId(), request.groupId())) {
-            throw new IllegalArgumentException("L'utente fa già parte di questo gruppo.");
+            throw new DuplicateResourceException("L'utente fa già parte di questo gruppo.");
         }
 
         UserEntity user = userRepository.findById(request.userId())
-                .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
+                .orElseThrow(() -> new ResourceNotFoundException("Utente non trovato"));
 
         GroupEntity group = groupRepository.findById(request.groupId())
-                .orElseThrow(() -> new IllegalArgumentException("Gruppo non trovato"));
+                .orElseThrow(() -> new ResourceNotFoundException("Gruppo non trovato"));
 
         UserGroupMappingEntity mapping = new UserGroupMappingEntity();
         mapping.setUser(user);

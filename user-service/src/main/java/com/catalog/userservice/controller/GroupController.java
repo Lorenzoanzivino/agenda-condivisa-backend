@@ -35,5 +35,4 @@ public class GroupController {
         List<GroupResponseDto> response = groupService.getAllGroups();
         return ResponseEntity.ok(response);
     }
-
 }
