@@ -1,4 +1,4 @@
-package com.catalog.userservice.service;
+package com.catalog.userservice.service.impl;
 
 import com.catalog.userservice.dto.GroupRequestDto;
 import com.catalog.userservice.dto.GroupResponseDto;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class GroupServiceImpl implements GroupService {
+public class GroupServiceImpl implements GroupService { // <--- CORRETTO: implementa l'INTERFACCIA
 
     private final GroupRepository groupRepository;
     private final GroupMapper groupMapper;

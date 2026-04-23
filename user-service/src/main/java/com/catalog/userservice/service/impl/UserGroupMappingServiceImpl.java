@@ -1,4 +1,4 @@
-package com.catalog.userservice.service;
+package com.catalog.userservice.service.impl;
 
 import com.catalog.userservice.dto.UserGroupMappingRequestDto;
 import com.catalog.userservice.dto.UserGroupMappingResponseDto;

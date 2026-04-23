@@ -1,8 +1,7 @@
 package com.catalog.userservice.controller;
 
-import com.catalog.userservice.dto.UserRequestDto;
-import com.catalog.userservice.dto.UserResponseDto;
-import com.catalog.userservice.service.UserService;
+import com.catalog.userservice.dto.*;
+import com.catalog.userservice.service.impl.UserServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,23 +15,25 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
-    @PostMapping
-    public ResponseEntity<UserResponseDto> createUser(@Valid @RequestBody UserRequestDto request) {
-        UserResponseDto response = userService.createUser(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    @PostMapping("/register")
+    public ResponseEntity<UserResponseDto> register(@Valid @RequestBody UserRequestDto request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(request));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponseDto> login(@Valid @RequestBody AuthRequestDto request) {
+        return ResponseEntity.ok(userService.login(request));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDto> getUserById(@PathVariable String id) {
-        UserResponseDto response = userService.getUserById(id);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(userService.getUserById(id));
     }
 
     @GetMapping
     public ResponseEntity<List<UserResponseDto>> getAllUsers() {
-        List<UserResponseDto> response = userService.getAllUsers();
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 }
