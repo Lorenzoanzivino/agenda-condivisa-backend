@@ -6,24 +6,25 @@ spring:
     name: api-gateway
   cloud:
     gateway:
+      default-filters:
+        - name: JwtAuthenticationFilter
       routes:
-        # Routing per User Service
-        - id: user-service-route
+        - id: user-service
           uri: http://localhost:8081
           predicates:
-            - Path=/api/users/**
-
-        # Routing per Calendar Service (Eventi)
-        - id: calendar-events-route
+            - Path=/api/users/**, /api/groups/**, /api/memberships/**
+        - id: calendar-service
           uri: http://localhost:8082
           predicates:
-            - Path=/api/events/**
-
-        # Routing per Calendar Service (Inviti)
-        - id: calendar-invites-route
-          uri: http://localhost:8082
+            - Path=/api/events/**, /api/invites/**
+        - id: agent-service
+          uri: http://localhost:8083
           predicates:
-            - Path=/api/invites/**
+            - Path=/api/chat/**
+
+jwt:
+  secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+  expiration: 86400000
 
 management:
   endpoints:

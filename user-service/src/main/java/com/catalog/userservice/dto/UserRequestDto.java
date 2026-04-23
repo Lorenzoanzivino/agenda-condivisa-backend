@@ -10,10 +10,14 @@ public record UserRequestDto(
         String email,
 
         @NotBlank(message = "Il nome è obbligatorio")
-        @Size(min = 2, max = 50, message = "Il nome deve avere tra 2 e 50 caratteri")
+        @Size(min = 2, max = 50)
         String nome,
 
         @NotBlank(message = "Il cognome è obbligatorio")
-        @Size(min = 2, max = 50, message = "Il cognome deve avere tra 2 e 50 caratteri")
-        String cognome
+        @Size(min = 2, max = 50)
+        String cognome,
+
+        @NotBlank(message = "La password è obbligatoria")
+        @Size(min = 8, message = "La password deve avere almeno 8 caratteri")
+        String password
 ) {}
