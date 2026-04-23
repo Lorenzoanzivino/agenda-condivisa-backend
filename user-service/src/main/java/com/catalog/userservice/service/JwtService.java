@@ -36,7 +36,10 @@ public class JwtService {
     }
 
     private SecretKey getSignKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secret);
-        return Keys.hmacShaKeyFor(keyBytes);
+        // Usiamo BASE64URL o RAW per chiavi generate come stringhe esadecimali/plain
+        byte[] keyBytes = io.jsonwebtoken.io.Decoders.BASE64.decode(secret);
+        // Se la chiave non è Base64 valida, il sistema fallisce.
+        // Per semplicità e coerenza con i test precedenti, usiamo Keys.hmacShaKeyFor con i bytes della stringa:
+        return Keys.hmacShaKeyFor(secret.getBytes());
     }
 }
