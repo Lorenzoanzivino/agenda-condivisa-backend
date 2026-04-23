@@ -5,7 +5,7 @@ import com.catalog.calendarservice.dto.EventResponseDto;
 import java.util.List;
 
 public interface EventService {
-    EventResponseDto createEvent(EventRequestDto request);
-    EventResponseDto getEventById(String id);
-    List<EventResponseDto> getEventsByOrganizer(String organizerId);
+    EventResponseDto createEvent(EventRequestDto request, String userId);
+    EventResponseDto getEventById(String id, String userId);
+    List<EventResponseDto> getMyEvents(String userId);
 }
