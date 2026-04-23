@@ -1,11 +1,9 @@
-version: '3.8'
-
 services:
   postgres-db:
     image: postgres:15-alpine
     container_name: shared-postgres
     ports:
-      - "0.0.0.0:55432:5432"  # <-- QUESTA E' LA RIGA DA CAMBIARE
+      - "55432:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -13,6 +11,74 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - agenda-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  user-service:
+    build:
+      context: ../user-service
+      dockerfile: Dockerfile
+    container_name: user-service
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://shared-postgres:5432/agenda_db?currentSchema=user_schema
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - JWT_SECRET=404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+    networks:
+      - agenda-network
+
+  calendar-service:
+    build:
+      context: ../calendar-service
+      dockerfile: Dockerfile
+    container_name: calendar-service
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://shared-postgres:5432/agenda_db?currentSchema=calendar_schema
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+    networks:
+      - agenda-network
+
+  agent-service:
+    build:
+      context: ../agent-service
+      dockerfile: Dockerfile
+    container_name: agent-service
+    ports:
+      - "8083:8083"
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    networks:
+      - agenda-network
+
+  api-gateway:
+    build:
+      context: ../api-gateway
+      dockerfile: Dockerfile
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - JWT_SECRET=404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+    depends_on:
+      - user-service
+      - calendar-service
+      - agent-service
     networks:
       - agenda-network
 
