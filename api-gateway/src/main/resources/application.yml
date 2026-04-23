@@ -8,21 +8,21 @@ spring:
     gateway:
       routes:
         - id: user-service
-          uri: http://localhost:8081
+          uri: http://user-service:8081
           predicates:
             - Path=/api/users/**, /api/groups/**, /api/memberships/**
           filters:
             - name: JwtAuthenticationFilter
 
         - id: calendar-service
-          uri: http://localhost:8082
+          uri: http://calendar-service:8082
           predicates:
             - Path=/api/events/**, /api/invites/**
           filters:
             - name: JwtAuthenticationFilter
 
         - id: agent-service
-          uri: http://localhost:8083
+          uri: http://agent-service:8083
           predicates:
             - Path=/api/chat/**
           filters:
@@ -32,7 +32,6 @@ jwt:
   secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
   expiration: 86400000
 
-# Per evitare che il gateway chiuda la connessione mentre Gemini elabora
 metadata:
   response-timeout: 30000
   connect-timeout: 30000
