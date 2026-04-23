@@ -1,12 +1,14 @@
-package com.catalog.calendarservice.service;
+package com.catalog.calendarservice.service.impl;
 
 import com.catalog.calendarservice.dto.InviteRequestDto;
 import com.catalog.calendarservice.dto.InviteResponseDto;
 import com.catalog.calendarservice.entity.EventoEntity;
 import com.catalog.calendarservice.entity.InvitoEntity;
+import com.catalog.calendarservice.exception.ResourceNotFoundException;
 import com.catalog.calendarservice.mapper.InvitoMapper;
 import com.catalog.calendarservice.repository.EventoRepository;
 import com.catalog.calendarservice.repository.InvitoRepository;
+import com.catalog.calendarservice.service.InviteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +27,7 @@ public class InviteServiceImpl implements InviteService {
     @Transactional
     public InviteResponseDto createInvite(InviteRequestDto request) {
         EventoEntity evento = eventoRepository.findById(request.eventoId())
-                .orElseThrow(() -> new IllegalArgumentException("Evento non trovato"));
+                .orElseThrow(() -> new ResourceNotFoundException("Evento non trovato"));
 
         InvitoEntity entity = new InvitoEntity();
         entity.setEvento(evento);

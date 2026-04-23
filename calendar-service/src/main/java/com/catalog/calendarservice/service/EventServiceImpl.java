@@ -1,10 +1,12 @@
-package com.catalog.calendarservice.service;
+package com.catalog.calendarservice.service.impl;
 
 import com.catalog.calendarservice.dto.EventRequestDto;
 import com.catalog.calendarservice.dto.EventResponseDto;
 import com.catalog.calendarservice.entity.EventoEntity;
+import com.catalog.calendarservice.exception.ResourceNotFoundException;
 import com.catalog.calendarservice.mapper.EventoMapper;
 import com.catalog.calendarservice.repository.EventoRepository;
+import com.catalog.calendarservice.service.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +32,7 @@ public class EventServiceImpl implements EventService {
     public EventResponseDto getEventById(String id) {
         return eventoRepository.findById(id)
                 .map(eventoMapper::toDto)
-                .orElseThrow(() -> new IllegalArgumentException("Evento non trovato"));
+                .orElseThrow(() -> new ResourceNotFoundException("Evento non trovato"));
     }
 
     @Override

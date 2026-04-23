@@ -3,7 +3,12 @@ package com.catalog.calendarservice.dto;
 import jakarta.validation.constraints.NotBlank;
 
 public record InviteRequestDto(
-        @NotBlank String eventoId,
-        @NotBlank String utenteId,
-        @NotBlank String statoRisposta
+        @NotBlank(message = "L'ID dell'evento è obbligatorio")
+        String eventoId,
+
+        @NotBlank(message = "L'ID dell'utente è obbligatorio")
+        String utenteId,
+
+        @NotBlank(message = "Lo stato della risposta è obbligatorio")
+        String statoRisposta
 ) {}
