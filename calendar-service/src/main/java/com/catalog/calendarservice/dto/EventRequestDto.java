@@ -1,6 +1,6 @@
 package com.catalog.calendarservice.dto;
 
-import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -12,12 +12,10 @@ public record EventRequestDto(
         String descrizione,
 
         @NotNull(message = "La data di inizio è obbligatoria")
-        @FutureOrPresent(message = "La data di inizio non può essere nel passato")
+        @Future(message = "La data di inizio deve essere nel futuro")
         LocalDateTime dataInizio,
 
         @NotNull(message = "La data di fine è obbligatoria")
-        LocalDateTime dataFine,
-
-        @NotBlank(message = "L'ID dell'organizzatore è obbligatorio")
-        String organizzatoreId
+        @Future(message = "La data di fine deve essere nel futuro")
+        LocalDateTime dataFine
 ) {}

@@ -18,17 +18,22 @@ public class EventController {
     private final EventService eventService;
 
     @PostMapping
-    public ResponseEntity<EventResponseDto> createEvent(@Valid @RequestBody EventRequestDto request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(eventService.createEvent(request));
+    public ResponseEntity<EventResponseDto> createEvent(
+            @Valid @RequestBody EventRequestDto request,
+            @RequestHeader("X-User-Id") String userId) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(eventService.createEvent(request, userId));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EventResponseDto> getEventById(@PathVariable String id) {
-        return ResponseEntity.ok(eventService.getEventById(id));
+    public ResponseEntity<EventResponseDto> getEventById(
+            @PathVariable String id,
+            @RequestHeader("X-User-Id") String userId) {
+        return ResponseEntity.ok(eventService.getEventById(id, userId));
     }
 
-    @GetMapping("/organizer/{organizerId}")
-    public ResponseEntity<List<EventResponseDto>> getEventsByOrganizer(@PathVariable String organizerId) {
-        return ResponseEntity.ok(eventService.getEventsByOrganizer(organizerId));
+    @GetMapping
+    public ResponseEntity<List<EventResponseDto>> getMyEvents(
+            @RequestHeader("X-User-Id") String userId) {
+        return ResponseEntity.ok(eventService.getMyEvents(userId));
     }
 }

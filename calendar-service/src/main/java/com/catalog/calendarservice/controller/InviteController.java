@@ -18,17 +18,22 @@ public class InviteController {
     private final InviteService inviteService;
 
     @PostMapping
-    public ResponseEntity<InviteResponseDto> createInvite(@Valid @RequestBody InviteRequestDto request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(inviteService.createInvite(request));
+    public ResponseEntity<InviteResponseDto> createInvite(
+            @Valid @RequestBody InviteRequestDto request,
+            @RequestHeader("X-User-Id") String organizerId) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(inviteService.createInvite(request, organizerId));
     }
 
     @GetMapping("/event/{eventId}")
-    public ResponseEntity<List<InviteResponseDto>> getInvitesByEvent(@PathVariable String eventId) {
-        return ResponseEntity.ok(inviteService.getInvitesByEvent(eventId));
+    public ResponseEntity<List<InviteResponseDto>> getInvitesByEvent(
+            @PathVariable String eventId,
+            @RequestHeader("X-User-Id") String organizerId) {
+        return ResponseEntity.ok(inviteService.getInvitesByEvent(eventId, organizerId));
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<InviteResponseDto>> getInvitesByUser(@PathVariable String userId) {
-        return ResponseEntity.ok(inviteService.getInvitesByUser(userId));
+    @GetMapping
+    public ResponseEntity<List<InviteResponseDto>> getMyInvites(
+            @RequestHeader("X-User-Id") String userId) {
+        return ResponseEntity.ok(inviteService.getMyInvites(userId));
     }
 }

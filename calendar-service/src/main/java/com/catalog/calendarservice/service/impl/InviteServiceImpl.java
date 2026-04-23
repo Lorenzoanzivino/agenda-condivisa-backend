@@ -25,9 +25,13 @@ public class InviteServiceImpl implements InviteService {
 
     @Override
     @Transactional
-    public InviteResponseDto createInvite(InviteRequestDto request) {
+    public InviteResponseDto createInvite(InviteRequestDto request, String organizerId) {
         EventoEntity evento = eventoRepository.findById(request.eventoId())
                 .orElseThrow(() -> new ResourceNotFoundException("Evento non trovato"));
+
+        if (!evento.getOrganizzatoreId().equals(organizerId)) {
+            throw new ResourceNotFoundException("Evento non trovato o accesso negato");
+        }
 
         InvitoEntity entity = new InvitoEntity();
         entity.setEvento(evento);
@@ -39,7 +43,14 @@ public class InviteServiceImpl implements InviteService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<InviteResponseDto> getInvitesByEvent(String eventId) {
+    public List<InviteResponseDto> getInvitesByEvent(String eventId, String organizerId) {
+        EventoEntity evento = eventoRepository.findById(eventId)
+                .orElseThrow(() -> new ResourceNotFoundException("Evento non trovato"));
+
+        if (!evento.getOrganizzatoreId().equals(organizerId)) {
+            throw new ResourceNotFoundException("Evento non trovato o accesso negato");
+        }
+
         return invitoRepository.findByEventoId(eventId).stream()
                 .map(invitoMapper::toDto)
                 .collect(Collectors.toList());
@@ -47,7 +58,7 @@ public class InviteServiceImpl implements InviteService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<InviteResponseDto> getInvitesByUser(String userId) {
+    public List<InviteResponseDto> getMyInvites(String userId) {
         return invitoRepository.findByUtenteId(userId).stream()
                 .map(invitoMapper::toDto)
                 .collect(Collectors.toList());
