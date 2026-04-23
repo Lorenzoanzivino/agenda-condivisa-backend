@@ -1,8 +1,9 @@
-package com.catalog.userservice.service.impl;
+package com.catalog.userservice.service;
 
 import com.catalog.userservice.dto.GroupRequestDto;
 import com.catalog.userservice.dto.GroupResponseDto;
 import com.catalog.userservice.entity.GroupEntity;
+import com.catalog.userservice.exception.ResourceNotFoundException;
 import com.catalog.userservice.mapper.GroupMapper;
 import com.catalog.userservice.repository.GroupRepository;
 import com.catalog.userservice.service.GroupService;
@@ -33,7 +34,7 @@ public class GroupServiceImpl implements GroupService {
     public GroupResponseDto getGroupById(String id) {
         return groupRepository.findById(id)
                 .map(groupMapper::toDto)
-                .orElseThrow(() -> new IllegalArgumentException("Gruppo non trovato"));
+                .orElseThrow(() -> new ResourceNotFoundException("Gruppo non trovato"));
     }
 
     @Override
