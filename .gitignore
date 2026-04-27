@@ -8,3 +8,4 @@ target/
 /docker/pgdata/
 .env
 .ChaiveAPI.txt
+.ChiaveApi.txt
