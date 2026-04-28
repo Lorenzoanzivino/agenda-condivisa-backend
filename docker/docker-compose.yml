@@ -19,6 +19,23 @@ services:
       timeout: 5s
       retries: 5
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    networks:
+      - agenda-network
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_running"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   user-service:
     build:
       context: ../user-service
@@ -48,8 +65,14 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://shared-postgres:5432/agenda_db?currentSchema=calendar_schema
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
     depends_on:
       postgres-db:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
     networks:
       - agenda-network
@@ -79,6 +102,19 @@ services:
       - user-service
       - calendar-service
       - agent-service
+    networks:
+      - agenda-network
+
+  notification-service:
+    build:
+      context: ../notification-service
+      dockerfile: Dockerfile
+    container_name: notification-service
+    environment:
+      - SPRING_RABBITMQ_HOST=rabbitmq
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
     networks:
       - agenda-network
 

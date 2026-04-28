@@ -1,9 +1,12 @@
 package com.catalog.calendarservice.scheduler;
 
+import com.catalog.calendarservice.config.RabbitMQConfig;
+import com.catalog.calendarservice.dto.NotificationEvent;
 import com.catalog.calendarservice.entity.EventoEntity;
 import com.catalog.calendarservice.repository.EventoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -18,10 +21,9 @@ import java.util.List;
 public class EventScheduler {
 
     private final EventoRepository eventoRepository;
+    private final RabbitTemplate rabbitTemplate;
 
-    // Esegue il job ogni minuto all'istante zero dei secondi (es: 10:00:00, 10:01:00...)
-    // In produzione useremo un cron giornaliero, es: "0 0 8 * * *" (Tutti i giorni alle 8:00)
-    @Scheduled(cron = "0 * * * * *")
+    @Scheduled(cron = "0 * * * * *") // Ogni minuto
     public void checkTodayEvents() {
         LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
         LocalDateTime endOfDay = LocalDate.now().atTime(LocalTime.MAX);
@@ -31,7 +33,15 @@ public class EventScheduler {
         log.info("⏰ [SCHEDULER] Ricerca eventi per oggi ({}): trovati {} eventi.", LocalDate.now(), todayEvents.size());
 
         for (EventoEntity evento : todayEvents) {
-            log.info(" 👉 Evento in programma: '{}' alle ore {}", evento.getTitolo(), evento.getDataInizio().toLocalTime());
+            NotificationEvent notification = new NotificationEvent(
+                    evento.getOrganizzatoreId(),
+                    evento.getTitolo(),
+                    "Hai un impegno: " + evento.getTitolo() + " alle " + evento.getDataInizio().toLocalTime(),
+                    LocalDateTime.now()
+            );
+
+            rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE, RabbitMQConfig.ROUTING_KEY, notification);
+            log.info(" ✉️ Notifica inviata a RabbitMQ per l'evento: {}", evento.getTitolo());
         }
     }
 }
