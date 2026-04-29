@@ -12,14 +12,22 @@ spring:
           predicates:
             - Path=/api/users/**, /api/groups/**, /api/memberships/**
           filters:
-            - name: JwtAuthenticationFilter
+            - name: CircuitBreaker
+              args:
+                name: userServiceCB
+                fallbackUri: forward:/fallback/user-service
+            - JwtAuthenticationFilter
 
         - id: calendar-service
           uri: http://calendar-service:8082
           predicates:
             - Path=/api/events/**, /api/invites/**
           filters:
-            - name: JwtAuthenticationFilter
+            - name: CircuitBreaker
+              args:
+                name: calendarServiceCB
+                fallbackUri: forward:/fallback/calendar-service
+            - JwtAuthenticationFilter
 
         - id: agent-service
           uri: http://agent-service:8083
@@ -35,3 +43,21 @@ jwt:
 metadata:
   response-timeout: 30000
   connect-timeout: 30000
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 3
+    instances:
+      userServiceCB:
+        baseConfig: default
+      calendarServiceCB:
+        baseConfig: default
+  timelimiter:
+    configs:
+      default:
+        timeoutDuration: 5s
