@@ -3,18 +3,18 @@ services:
     image: postgres:15-alpine
     container_name: shared-postgres
     ports:
-      - "55432:5432"
+      - "${DB_PORT:55432}:5432"
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: agenda_db
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - agenda-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -26,8 +26,8 @@ services:
       - "5672:5672"
       - "15672:15672"
     environment:
-      - RABBITMQ_DEFAULT_USER=guest
-      - RABBITMQ_DEFAULT_PASS=guest
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:guest}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:guest}
     networks:
       - agenda-network
     healthcheck:
@@ -43,11 +43,11 @@ services:
     container_name: user-service
     ports:
       - "8081:8081"
+    env_file:
+      - ../.env
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://shared-postgres:5432/agenda_db?currentSchema=user_schema
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=postgres
-      - JWT_SECRET=404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+      - DB_HOST=shared-postgres
+      - DB_PORT=5432
     depends_on:
       postgres-db:
         condition: service_healthy
@@ -61,14 +61,12 @@ services:
     container_name: calendar-service
     ports:
       - "8082:8082"
+    env_file:
+      - ../.env
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://shared-postgres:5432/agenda_db?currentSchema=calendar_schema
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=postgres
-      - SPRING_RABBITMQ_HOST=rabbitmq
-      - SPRING_RABBITMQ_PORT=5672
-      - SPRING_RABBITMQ_USERNAME=guest
-      - SPRING_RABBITMQ_PASSWORD=guest
+      - DB_HOST=shared-postgres
+      - DB_PORT=5432
+      - RABBITMQ_HOST=rabbitmq
     depends_on:
       postgres-db:
         condition: service_healthy
@@ -84,8 +82,8 @@ services:
     container_name: agent-service
     ports:
       - "8083:8083"
-    environment:
-      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    env_file:
+      - ../.env
     networks:
       - agenda-network
 
@@ -96,8 +94,8 @@ services:
     container_name: api-gateway
     ports:
       - "8080:8080"
-    environment:
-      - JWT_SECRET=404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+    env_file:
+      - ../.env
     depends_on:
       - user-service
       - calendar-service
@@ -110,8 +108,10 @@ services:
       context: ../notification-service
       dockerfile: Dockerfile
     container_name: notification-service
+    env_file:
+      - ../.env
     environment:
-      - SPRING_RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_HOST=rabbitmq
     depends_on:
       rabbitmq:
         condition: service_healthy
