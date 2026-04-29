@@ -15,12 +15,11 @@ spring:
   flyway:
     enabled: true
     default-schema: calendar_schema
-  # Configuriamo anche RabbitMQ per essere pronti al deploy senza hardcoding
   rabbitmq:
     host: ${RABBITMQ_HOST:localhost}
     port: ${RABBITMQ_PORT:5672}
-    username: ${RABBITMQ_USER:guest}
-    password: ${RABBITMQ_PASSWORD:guest}
+    username: ${RABBITMQ_USER}
+    password: ${RABBITMQ_PASSWORD}
 
 management:
   endpoints:
