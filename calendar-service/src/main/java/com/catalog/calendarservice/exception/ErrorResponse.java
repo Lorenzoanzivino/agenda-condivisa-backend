@@ -9,4 +9,5 @@ public record ErrorResponse(
         String error,
         String message,
         Map<String, String> validationErrors
-) {}
+) {
+}

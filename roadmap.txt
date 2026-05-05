@@ -1,0 +1,26 @@
+Roadmap Aggiornata (Focus Locale & Qualità)
+Fase E2: Refactoring & Docs (Backend Cleanup)
+
+    [X] Installazione SonarLint e risoluzione dei "Code Smells".
+
+    [ ] Implementazione Swagger/OpenAPI su user-service e calendar-service.
+
+    [ ] Configurazione policy CORS sull'API Gateway per permettere al frontend di comunicare.
+
+Fase F: Sviluppo Frontend (Local-first)
+
+    [ ] Scelta del framework (Consiglio: Refine se cerchi velocità CRUD, Expo se vuoi un'app nativa).
+
+    [ ] Integrazione del dataProvider di Refine con le rotte del tuo API Gateway.
+
+    [ ] Sviluppo Login/Register gestendo il JWT nel dispositivo.
+
+Fase G: Mobile Build
+
+    [ ] Setup di Capacitor (se usi Refine) o Expo Build.
+
+    [ ] Generazione del file .apk.
+
+    [ ] Test su dispositivo fisico.
+
+Da dove iniziamo? Vuoi che ti aiuti a configurare Swagger per documentare le API o preferisci preparare il Gateway per i CORS?

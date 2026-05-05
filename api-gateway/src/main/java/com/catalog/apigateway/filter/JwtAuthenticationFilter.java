@@ -1,6 +1,8 @@
 package com.catalog.apigateway.filter;
 
 import com.catalog.apigateway.util.JwtUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpHeaders;
@@ -13,6 +15,8 @@ import reactor.core.publisher.Mono;
 @Component
 public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAuthenticationFilter.Config> {
 
+    private static final Logger log = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+
     private final RouteValidator validator;
     private final JwtUtil jwtUtil;
 
@@ -24,48 +28,41 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAut
 
     @Override
     public GatewayFilter apply(Config config) {
-        return ((exchange, chain) -> {
-            if (validator.isSecured.test(exchange.getRequest())) {
-                // 1. Controllo presenza Header Authorization
-                if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
-                    return onError(exchange, HttpStatus.UNAUTHORIZED);
-                }
+        return (exchange, chain) -> {
+            if (validator.isSecured(exchange.getRequest())) {
+                String authHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 
-                String authHeader = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
                 if (authHeader == null || !authHeader.startsWith("Bearer ")) {
                     return onError(exchange, HttpStatus.UNAUTHORIZED);
                 }
 
-                authHeader = authHeader.substring(7);
+                String token = authHeader.substring(7);
 
                 try {
-                    // 2. Validazione Token
-                    jwtUtil.validateToken(authHeader);
+                    jwtUtil.validateToken(token);
+                    String userId = jwtUtil.extractUserId(token);
 
-                    // 3. Estrazione dati e mutazione richiesta per passare userId ai microservizi a valle
-                    String userId = jwtUtil.extractUserId(authHeader);
-
-                    ServerHttpRequest request = exchange.getRequest().mutate()
+                    ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
                             .header("X-User-Id", userId)
                             .build();
 
-                    // 4. Inoltro dell'exchange mutato
-                    return chain.filter(exchange.mutate().request(request).build());
+                    return chain.filter(exchange.mutate().request(mutatedRequest).build());
 
                 } catch (Exception e) {
-                    System.err.println("JWT Validation failed: " + e.getMessage());
+                    log.error("JWT Validation failed: {}", e.getMessage());
                     return onError(exchange, HttpStatus.UNAUTHORIZED);
                 }
             }
             return chain.filter(exchange);
-        });
+        };
     }
 
-    private Mono<Void> onError(ServerWebExchange exchange, HttpStatus httpStatus) {
-        exchange.getResponse().setStatusCode(httpStatus);
+    private Mono<Void> onError(ServerWebExchange exchange, HttpStatus status) {
+        exchange.getResponse().setStatusCode(status);
         return exchange.getResponse().setComplete();
     }
 
     public static class Config {
+        // Classe di configurazione per eventuali parametri del filtro
     }
 }

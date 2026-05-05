@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -55,7 +54,7 @@ public class UserGroupMappingServiceImpl implements UserGroupMappingService {
     public List<UserGroupMappingResponseDto> getUsersByGroupId(String groupId) {
         return mappingRepository.findByGroupId(groupId).stream()
                 .map(mappingMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -63,6 +62,6 @@ public class UserGroupMappingServiceImpl implements UserGroupMappingService {
     public List<UserGroupMappingResponseDto> getGroupsByUserId(String userId) {
         return mappingRepository.findByUserId(userId).stream()
                 .map(mappingMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 }

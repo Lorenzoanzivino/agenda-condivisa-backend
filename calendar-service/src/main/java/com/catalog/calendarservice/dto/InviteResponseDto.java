@@ -5,4 +5,5 @@ public record InviteResponseDto(
         String eventoId,
         String utenteId,
         String statoRisposta
-) {}
+) {
+}

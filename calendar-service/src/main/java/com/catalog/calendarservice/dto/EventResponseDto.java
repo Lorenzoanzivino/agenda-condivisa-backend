@@ -9,4 +9,5 @@ public record EventResponseDto(
         LocalDateTime dataInizio,
         LocalDateTime dataFine,
         String organizzatoreId
-) {}
+) {
+}

@@ -7,4 +7,5 @@ public record GroupRequestDto(
         @NotBlank(message = "Il nome del gruppo è obbligatorio")
         @Size(min = 3, max = 50, message = "Il nome del gruppo deve avere tra 3 e 50 caratteri")
         String nome
-) {}
+) {
+}

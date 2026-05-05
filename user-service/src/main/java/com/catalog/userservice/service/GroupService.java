@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface GroupService {
     GroupResponseDto createGroup(GroupRequestDto request);
+
     GroupResponseDto getGroupById(String id);
+
     List<GroupResponseDto> getAllGroups();
 }

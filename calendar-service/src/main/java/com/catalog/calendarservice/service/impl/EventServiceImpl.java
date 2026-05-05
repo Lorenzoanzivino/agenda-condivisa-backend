@@ -10,8 +10,8 @@ import com.catalog.calendarservice.service.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -46,6 +46,6 @@ public class EventServiceImpl implements EventService {
     public List<EventResponseDto> getMyEvents(String userId) {
         return eventoRepository.findByOrganizzatoreId(userId).stream()
                 .map(eventoMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 }

@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface UserGroupMappingService {
     UserGroupMappingResponseDto addUserToGroup(UserGroupMappingRequestDto request);
+
     List<UserGroupMappingResponseDto> getUsersByGroupId(String groupId);
+
     List<UserGroupMappingResponseDto> getGroupsByUserId(String userId);
 }

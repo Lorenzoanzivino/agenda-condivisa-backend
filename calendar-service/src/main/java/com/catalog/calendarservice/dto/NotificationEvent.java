@@ -8,4 +8,5 @@ public record NotificationEvent(
         String titoloEvento,
         String messaggio,
         LocalDateTime timestamp
-) implements Serializable {}
+) implements Serializable {
+}

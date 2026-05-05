@@ -3,6 +3,7 @@ package com.catalog.calendarservice.dto;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+
 import java.time.LocalDateTime;
 
 public record EventRequestDto(
@@ -18,4 +19,5 @@ public record EventRequestDto(
         @NotNull(message = "La data di fine è obbligatoria")
         @Future(message = "La data di fine deve essere nel futuro")
         LocalDateTime dataFine
-) {}
+) {
+}

@@ -12,8 +12,8 @@ import com.catalog.calendarservice.service.InviteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -53,7 +53,7 @@ public class InviteServiceImpl implements InviteService {
 
         return invitoRepository.findByEventoId(eventId).stream()
                 .map(invitoMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -61,6 +61,6 @@ public class InviteServiceImpl implements InviteService {
     public List<InviteResponseDto> getMyInvites(String userId) {
         return invitoRepository.findByUtenteId(userId).stream()
                 .map(invitoMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 }

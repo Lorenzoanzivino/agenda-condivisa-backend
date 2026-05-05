@@ -5,4 +5,5 @@ public record UserGroupMappingResponseDto(
         UserResponseDto user,
         GroupResponseDto group,
         String ruolo
-) {}
+) {
+}

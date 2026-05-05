@@ -1,6 +1,9 @@
 package com.catalog.calendarservice.config;
 
-import org.springframework.amqp.core.*;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
@@ -14,18 +17,21 @@ public class RabbitMQConfig {
     public static final String ROUTING_KEY = "k.notifications";
 
     @Bean
-    public Queue queue() {
+    public Queue notificationQueue() {
         return new Queue(QUEUE, true);
     }
 
     @Bean
-    public DirectExchange exchange() {
+    public DirectExchange notificationExchange() {
         return new DirectExchange(EXCHANGE);
     }
 
     @Bean
-    public Binding binding(Queue queue, DirectExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(ROUTING_KEY);
+    public Binding binding(Queue notificationQueue, DirectExchange notificationExchange) {
+        return BindingBuilder
+                .bind(notificationQueue)
+                .to(notificationExchange)
+                .with(ROUTING_KEY);
     }
 
     @Bean

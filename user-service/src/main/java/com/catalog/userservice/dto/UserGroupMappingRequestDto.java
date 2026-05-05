@@ -11,4 +11,5 @@ public record UserGroupMappingRequestDto(
 
         @NotBlank(message = "Il ruolo è obbligatorio")
         String ruolo
-) {}
+) {
+}

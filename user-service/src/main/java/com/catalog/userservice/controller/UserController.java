@@ -1,6 +1,9 @@
 package com.catalog.userservice.controller;
 
-import com.catalog.userservice.dto.*;
+import com.catalog.userservice.dto.AuthRequestDto;
+import com.catalog.userservice.dto.AuthResponseDto;
+import com.catalog.userservice.dto.UserRequestDto;
+import com.catalog.userservice.dto.UserResponseDto;
 import com.catalog.userservice.service.impl.UserServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

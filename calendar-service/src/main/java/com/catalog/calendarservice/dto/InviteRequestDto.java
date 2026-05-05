@@ -11,4 +11,5 @@ public record InviteRequestDto(
 
         @NotBlank(message = "Lo stato della risposta è obbligatorio")
         String statoRisposta
-) {}
+) {
+}

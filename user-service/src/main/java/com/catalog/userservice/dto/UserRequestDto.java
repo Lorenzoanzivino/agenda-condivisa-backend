@@ -26,4 +26,5 @@ public record UserRequestDto(
         // Nuovi campi (opzionali in fase di registrazione)
         LocalDate dataNascita,
         String avatar
-) {}
+) {
+}
