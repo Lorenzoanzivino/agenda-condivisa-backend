@@ -1,6 +1,6 @@
 // src/utils/authStorage.ts
 import * as SecureStore from 'expo-secure-store';
-import { Platform } from 'react-native';
+import {Platform} from 'react-native';
 
 const TOKEN_KEY = 'userToken';
 const USER_KEY = 'userData';

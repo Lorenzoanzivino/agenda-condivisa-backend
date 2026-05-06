@@ -1,6 +1,6 @@
-import { Dimensions, PixelRatio } from 'react-native';
+import {Dimensions, PixelRatio} from 'react-native';
 
-const { width, height } = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 const scale = width / 375;
 
 // Funzione per scalare dimensioni in base allo schermo
@@ -25,7 +25,7 @@ export const ClayStyles = {
         padding: normalize(20),
         // Ombra esterna (Claymorphism)
         shadowColor: Colors.shadowDark,
-        shadowOffset: { width: 8, height: 8 },
+        shadowOffset: {width: 8, height: 8},
         shadowOpacity: 0.5,
         shadowRadius: 10,
         elevation: 10, // Per Android
