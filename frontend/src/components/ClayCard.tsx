@@ -1,13 +1,13 @@
 import React from 'react';
-import { View, StyleSheet, ViewStyle } from 'react-native';
-import { Colors, ClayStyles, normalize } from '../constants/Theme';
+import {StyleSheet, View, ViewStyle} from 'react-native';
+import {ClayStyles, normalize} from '../constants/Theme';
 
 interface ClayCardProps {
     children: React.ReactNode;
     style?: ViewStyle;
 }
 
-export const ClayCard = ({ children, style }: ClayCardProps) => {
+export const ClayCard = ({children, style}: ClayCardProps) => {
     return (
         <View style={[ClayStyles.card, style]}>
             {/* Simulo l'effetto luce interna con un bordo superiore sottile */}
