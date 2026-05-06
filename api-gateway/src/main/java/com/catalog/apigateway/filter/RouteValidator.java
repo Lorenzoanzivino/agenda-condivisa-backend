@@ -13,6 +13,8 @@ public class RouteValidator {
             "/api/users/login",
             "/v3/api-docs",
             "/swagger-ui",
+            "/swagger-resources", // Aggiunto per Swagger
+            "/webjars",           // Aggiunto per Swagger
             "/fallback"
     );
 

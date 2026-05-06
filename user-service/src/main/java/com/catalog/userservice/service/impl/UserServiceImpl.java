@@ -1,8 +1,9 @@
+// user-service/src/main/java/com/catalog/userservice/service/impl/UserServiceImpl.java
 package com.catalog.userservice.service.impl;
 
-import com.catalog.userservice.dto.AuthRequestDto;
 import com.catalog.userservice.dto.AuthResponseDto;
-import com.catalog.userservice.dto.UserRequestDto;
+import com.catalog.userservice.dto.LoginRequestDto;
+import com.catalog.userservice.dto.RegisterRequestDto;
 import com.catalog.userservice.dto.UserResponseDto;
 import com.catalog.userservice.entity.UserEntity;
 import com.catalog.userservice.exception.DuplicateResourceException;
@@ -24,32 +25,40 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
-    public UserResponseDto createUser(UserRequestDto request) {
+    public AuthResponseDto register(RegisterRequestDto request) {
         if (userRepository.existsByEmail(request.email())) {
-            throw new DuplicateResourceException("Email già registrata");
+            throw new DuplicateResourceException("Email già in uso");
         }
-        UserEntity entity = userMapper.toEntity(request);
-        entity.setPassword(passwordEncoder.encode(request.password()));
-        return userMapper.toDto(userRepository.save(entity));
+
+        UserEntity user = userMapper.toEntity(request);
+        user.setPassword(passwordEncoder.encode(request.password()));
+        UserEntity savedUser = userRepository.save(user);
+
+        return new AuthResponseDto(
+                jwtService.generateToken(savedUser.getId()),
+                userMapper.toDto(savedUser)
+        );
     }
 
-    public AuthResponseDto login(AuthRequestDto request) {
-        UserEntity user = userRepository.findAll().stream()
-                .filter(u -> u.getEmail().equals(request.email()))
-                .findFirst()
+    @Override
+    @Transactional(readOnly = true)
+    public AuthResponseDto login(LoginRequestDto request) {
+        UserEntity user = userRepository.findByEmail(request.email())
                 .orElseThrow(() -> new ResourceNotFoundException("Credenziali non valide"));
 
         if (!passwordEncoder.matches(request.password(), user.getPassword())) {
             throw new ResourceNotFoundException("Credenziali non valide");
         }
 
-        String token = jwtService.generateToken(user.getId());
-        return new AuthResponseDto(token, userMapper.toDto(user));
+        return new AuthResponseDto(
+                jwtService.generateToken(user.getId()),
+                userMapper.toDto(user)
+        );
     }
 
     @Override

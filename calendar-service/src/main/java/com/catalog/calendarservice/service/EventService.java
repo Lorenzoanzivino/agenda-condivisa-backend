@@ -10,5 +10,7 @@ public interface EventService {
 
     EventResponseDto getEventById(String id, String userId);
 
-    List<EventResponseDto> getMyEvents(String userId);
+    List<EventResponseDto> getPersonalEvents(String userId);
+
+    List<EventResponseDto> getGroupEvents(String groupId);
 }

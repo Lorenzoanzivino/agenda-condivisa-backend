@@ -8,7 +8,7 @@ import lombok.Setter;
 import java.util.UUID;
 
 @Entity
-@Table(name = "user_group_mapping")
+@Table(name = "user_group_mapping", schema = "user_schema") // <--- SCHEMA AGGIUNTO
 @Getter
 @Setter
 @NoArgsConstructor
@@ -25,6 +25,7 @@ public class UserGroupMappingEntity {
     @JoinColumn(name = "group_id")
     private GroupEntity group;
 
+    @Column(nullable = false)
     private String ruolo;
 
     @PrePersist
@@ -33,5 +34,4 @@ public class UserGroupMappingEntity {
             this.id = UUID.randomUUID().toString();
         }
     }
-
 }

@@ -1,9 +1,6 @@
 package com.catalog.userservice.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,7 +8,7 @@ import lombok.Setter;
 import java.util.UUID;
 
 @Entity
-@Table(name = "groups")
+@Table(name = "groups", schema = "user_schema")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -20,7 +17,11 @@ public class GroupEntity {
     @Id
     private String id;
 
+    @Column(nullable = false)
     private String nome;
+
+    @Column(name = "codice_invito", unique = true, nullable = false)
+    private String codiceInvito;
 
     @PrePersist
     protected void onCreate() {
@@ -28,5 +29,4 @@ public class GroupEntity {
             this.id = UUID.randomUUID().toString();
         }
     }
-
 }

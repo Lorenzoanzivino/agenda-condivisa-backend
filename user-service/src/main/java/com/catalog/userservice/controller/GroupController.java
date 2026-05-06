@@ -1,7 +1,9 @@
+// user-service/src/main/java/com/catalog/userservice/controller/GroupController.java
 package com.catalog.userservice.controller;
 
 import com.catalog.userservice.dto.GroupRequestDto;
 import com.catalog.userservice.dto.GroupResponseDto;
+import com.catalog.userservice.dto.JoinGroupRequestDto;
 import com.catalog.userservice.service.GroupService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +21,19 @@ public class GroupController {
     private final GroupService groupService;
 
     @PostMapping
-    public ResponseEntity<GroupResponseDto> createGroup(@Valid @RequestBody GroupRequestDto request) {
-        GroupResponseDto response = groupService.createGroup(request);
+    public ResponseEntity<GroupResponseDto> createGroup(
+            @Valid @RequestBody GroupRequestDto request,
+            @RequestHeader("X-User-Id") String userId) {
+        GroupResponseDto response = groupService.createGroup(request, userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping("/join")
+    public ResponseEntity<GroupResponseDto> joinGroup(
+            @Valid @RequestBody JoinGroupRequestDto request,
+            @RequestHeader("X-User-Id") String userId) {
+        GroupResponseDto response = groupService.joinGroup(request, userId);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")

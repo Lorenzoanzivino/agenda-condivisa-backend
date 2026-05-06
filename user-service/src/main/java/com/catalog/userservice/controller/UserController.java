@@ -1,10 +1,11 @@
+// user-service/src/main/java/com/catalog/userservice/controller/UserController.java
 package com.catalog.userservice.controller;
 
-import com.catalog.userservice.dto.AuthRequestDto;
 import com.catalog.userservice.dto.AuthResponseDto;
-import com.catalog.userservice.dto.UserRequestDto;
+import com.catalog.userservice.dto.LoginRequestDto;
+import com.catalog.userservice.dto.RegisterRequestDto;
 import com.catalog.userservice.dto.UserResponseDto;
-import com.catalog.userservice.service.impl.UserServiceImpl;
+import com.catalog.userservice.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,15 +19,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserServiceImpl userService;
+    private final UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponseDto> register(@Valid @RequestBody UserRequestDto request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(request));
+    public ResponseEntity<AuthResponseDto> register(@Valid @RequestBody RegisterRequestDto request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.register(request));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponseDto> login(@Valid @RequestBody AuthRequestDto request) {
+    public ResponseEntity<AuthResponseDto> login(@Valid @RequestBody LoginRequestDto request) {
         return ResponseEntity.ok(userService.login(request));
     }
 

@@ -9,7 +9,12 @@ import java.util.List;
 
 @Repository
 public interface EventoRepository extends JpaRepository<EventoEntity, String> {
-    List<EventoEntity> findByOrganizzatoreId(String organizzatoreId);
+    // Eventi privati (personali)
+    List<EventoEntity> findByOrganizzatoreIdAndGruppoIdIsNull(String organizzatoreId);
 
+    // Eventi di un gruppo specifico (condivisi)
+    List<EventoEntity> findByGruppoId(String gruppoId);
+
+    // Per lo scheduler delle notifiche
     List<EventoEntity> findByDataInizioBetween(LocalDateTime start, LocalDateTime end);
 }

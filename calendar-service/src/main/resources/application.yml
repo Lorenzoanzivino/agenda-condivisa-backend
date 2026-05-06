@@ -1,9 +1,14 @@
 server:
   port: 8082
 
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: 86400000
+
 spring:
   application:
     name: calendar-service
+
   datasource:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:55432}/${DB_NAME:agenda_db}?currentSchema=calendar_schema
     username: ${DB_USER}

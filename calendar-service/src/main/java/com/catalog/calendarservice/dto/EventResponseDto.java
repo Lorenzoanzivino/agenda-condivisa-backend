@@ -8,6 +8,8 @@ public record EventResponseDto(
         String descrizione,
         LocalDateTime dataInizio,
         LocalDateTime dataFine,
-        String organizzatoreId
+        boolean tuttoGiorno,    // Aggiunto per UI
+        String organizzatoreId,
+        String gruppoId         // Aggiunto per distinguere Privato/Condiviso
 ) {
 }

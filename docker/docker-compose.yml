@@ -14,7 +14,7 @@ services:
     networks:
       - agenda-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -87,22 +87,6 @@ services:
     networks:
       - agenda-network
 
-  api-gateway:
-    build:
-      context: ../api-gateway
-      dockerfile: Dockerfile
-    container_name: api-gateway
-    ports:
-      - "8080:8080"
-    env_file:
-      - ../.env
-    depends_on:
-      - user-service
-      - calendar-service
-      - agent-service
-    networks:
-      - agenda-network
-
   notification-service:
     build:
       context: ../notification-service
@@ -115,6 +99,26 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
+    networks:
+      - agenda-network
+
+  api-gateway:
+    build:
+      context: ../api-gateway
+      dockerfile: Dockerfile
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    env_file:
+      - ../.env
+    environment:
+      - USER_SERVICE_URI=http://user-service:8081
+      - CALENDAR_SERVICE_URI=http://calendar-service:8082
+      - AGENT_SERVICE_URI=http://agent-service:8083
+    depends_on:
+      - user-service
+      - calendar-service
+      - agent-service
     networks:
       - agenda-network
 

@@ -1,3 +1,4 @@
+// user-service/src/main/java/com/catalog/userservice/service/UserGroupMappingService.java
 package com.catalog.userservice.service;
 
 import com.catalog.userservice.dto.UserGroupMappingRequestDto;

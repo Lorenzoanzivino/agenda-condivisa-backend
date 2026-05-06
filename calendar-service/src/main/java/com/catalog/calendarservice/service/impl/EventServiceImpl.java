@@ -24,28 +24,31 @@ public class EventServiceImpl implements EventService {
     @Transactional
     public EventResponseDto createEvent(EventRequestDto request, String userId) {
         EventoEntity entity = eventoMapper.toEntity(request);
-        entity.setOrganizzatoreId(userId); // Sovrascrive eventuali dati con l'ID verificato dal Gateway
+        entity.setOrganizzatoreId(userId);
         return eventoMapper.toDto(eventoRepository.save(entity));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public EventResponseDto getEventById(String id, String userId) {
-        EventoEntity evento = eventoRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Evento non trovato"));
-
-        if (!evento.getOrganizzatoreId().equals(userId)) {
-            throw new ResourceNotFoundException("Evento non trovato o accesso negato");
-        }
-
-        return eventoMapper.toDto(evento);
+    public List<EventResponseDto> getPersonalEvents(String userId) {
+        return eventoRepository.findByOrganizzatoreIdAndGruppoIdIsNull(userId).stream()
+                .map(eventoMapper::toDto)
+                .toList();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<EventResponseDto> getMyEvents(String userId) {
-        return eventoRepository.findByOrganizzatoreId(userId).stream()
+    public List<EventResponseDto> getGroupEvents(String groupId) {
+        return eventoRepository.findByGruppoId(groupId).stream()
                 .map(eventoMapper::toDto)
                 .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public EventResponseDto getEventById(String id, String userId) {
+        return eventoRepository.findById(id)
+                .map(eventoMapper::toDto)
+                .orElseThrow(() -> new ResourceNotFoundException("Evento non trovato"));
     }
 }

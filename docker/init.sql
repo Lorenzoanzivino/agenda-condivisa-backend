@@ -1,2 +1,3 @@
+-- docker/init.sql
 CREATE SCHEMA IF NOT EXISTS user_schema;
 CREATE SCHEMA IF NOT EXISTS calendar_schema;

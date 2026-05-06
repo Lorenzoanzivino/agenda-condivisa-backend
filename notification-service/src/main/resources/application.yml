@@ -13,3 +13,6 @@ spring:
 logging:
   level:
     root: INFO
+    org.springframework.amqp: WARN # Riduce il rumore dei log di sistema RabbitMQ
+  pattern:
+    console: "%d{HH:mm:ss} %-5level %logger{36} - %msg%n"

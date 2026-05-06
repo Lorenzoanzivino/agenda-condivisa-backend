@@ -35,23 +35,39 @@ class EventServiceImplTest {
         LocalDateTime dataInizio = LocalDateTime.now();
         LocalDateTime dataFine = dataInizio.plusHours(1);
 
-        // Rimosso "org-1" per allinearsi ai 4 argomenti richiesti
-        EventRequestDto request = new EventRequestDto("Titolo", "Descrizione", dataInizio, dataFine);
+        // Aggiornato con 6 parametri: titolo, descrizione, dataInizio, dataFine, tuttoGiorno, gruppoId
+        EventRequestDto request = new EventRequestDto(
+                "Titolo",
+                "Descrizione",
+                dataInizio,
+                dataFine,
+                false,
+                null
+        );
 
         EventoEntity entity = new EventoEntity();
         entity.setId("evt-1");
         entity.setTitolo("Titolo");
         entity.setOrganizzatoreId("org-1");
+        entity.setTuttoGiorno(false);
+        entity.setGruppoId(null);
 
-        // Rimosso parametro in eccesso se EventResponseDto ne richiede meno.
-        // Adatta questi campi se il tuo record differisce.
-        EventResponseDto responseDto = new EventResponseDto("evt-1", "Titolo", "Descrizione", dataInizio, dataFine, "org-1");
+        // Aggiornato con 8 parametri per EventResponseDto
+        EventResponseDto responseDto = new EventResponseDto(
+                "evt-1",
+                "Titolo",
+                "Descrizione",
+                dataInizio,
+                dataFine,
+                false,
+                "org-1",
+                null
+        );
 
         when(eventoMapper.toEntity(any(EventRequestDto.class))).thenReturn(entity);
         when(eventoRepository.save(any(EventoEntity.class))).thenReturn(entity);
         when(eventoMapper.toDto(any(EventoEntity.class))).thenReturn(responseDto);
 
-        // Se il tuo metodo richiede esplicitamente l'ID organizzatore (es. createEvent(request, userId)), passalo qui
         EventResponseDto result = eventService.createEvent(request, "org-1");
 
         assertNotNull(result);

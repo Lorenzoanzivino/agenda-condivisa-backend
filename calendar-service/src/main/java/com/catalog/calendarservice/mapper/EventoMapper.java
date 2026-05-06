@@ -12,5 +12,7 @@ public interface EventoMapper {
     EventResponseDto toDto(EventoEntity entity);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "organizzatoreId", ignore = true)
+        // Settato nel Service
     EventoEntity toEntity(EventRequestDto dto);
 }

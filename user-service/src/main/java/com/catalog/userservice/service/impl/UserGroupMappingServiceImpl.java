@@ -1,3 +1,4 @@
+// user-service/src/main/java/com/catalog/userservice/service/impl/UserGroupMappingServiceImpl.java
 package com.catalog.userservice.service.impl;
 
 import com.catalog.userservice.dto.UserGroupMappingRequestDto;
@@ -45,8 +46,7 @@ public class UserGroupMappingServiceImpl implements UserGroupMappingService {
         mapping.setGroup(group);
         mapping.setRuolo(request.ruolo());
 
-        UserGroupMappingEntity savedMapping = mappingRepository.save(mapping);
-        return mappingMapper.toDto(savedMapping);
+        return mappingMapper.toDto(mappingRepository.save(mapping));
     }
 
     @Override

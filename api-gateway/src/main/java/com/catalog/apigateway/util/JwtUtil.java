@@ -1,6 +1,7 @@
+// api-gateway/src/main/java/com/catalog/apigateway/util/JwtUtil.java
+
 package com.catalog.apigateway.util;
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,24 +15,25 @@ public class JwtUtil {
     @Value("${jwt.secret}")
     private String secret;
 
-    public void validateToken(final String token) {
+    public void validateToken(String token) {
         Jwts.parser()
                 .verifyWith(getSignKey())
                 .build()
                 .parseSignedClaims(token);
     }
 
-    private SecretKey getSignKey() {
-        return Keys.hmacShaKeyFor(secret.getBytes());
-    }
-
     public String extractUserId(String token) {
-        Claims claims = Jwts.parser()
+        return Jwts.parser()
                 .verifyWith(getSignKey())
                 .build()
                 .parseSignedClaims(token)
-                .getPayload();
+                .getPayload()
+                .getSubject();
+    }
 
-        return claims.getSubject();
+    private SecretKey getSignKey() {
+        // DEVE ESSERE IDENTICO ALLO USER-SERVICE
+        byte[] keyBytes = io.jsonwebtoken.io.Decoders.BASE64.decode(secret);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 }

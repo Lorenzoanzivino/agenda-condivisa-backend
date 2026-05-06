@@ -1,26 +1,93 @@
-Roadmap Aggiornata (Focus Locale & Qualità)
-Fase E2: Refactoring & Docs (Backend Cleanup)
+FASE 1: Autenticazione e Refactoring Utenti (Backend + Frontend)
 
-    [X] Installazione SonarLint e risoluzione dei "Code Smells".
+    [ ] Backend (API Gateway / User-Service):
 
-    [ ] Implementazione Swagger/OpenAPI su user-service e calendar-service.
+        Rimuovere la vecchia logica di registrazione manuale (form con password, data di nascita, ecc.).
 
-    [ ] Configurazione policy CORS sull'API Gateway per permettere al frontend di comunicare.
+        Integrare Google OAuth2 (Spring Security).
 
-Fase F: Sviluppo Frontend (Local-first)
+        Creare l'endpoint per il primo accesso: l'utente loggato con Google fornisce solo il "Nome di visualizzazione" (es. "Lorenzo").
 
-    [ ] Scelta del framework (Consiglio: Refine se cerchi velocità CRUD, Expo se vuoi un'app nativa).
+    [ ] Frontend (Mobile):
 
-    [ ] Integrazione del dataProvider di Refine con le rotte del tuo API Gateway.
+        Creare una schermata di Login minimale con un unico tasto "Accedi con Google" in stile Glassmorfismo.
 
-    [ ] Sviluppo Login/Register gestendo il JWT nel dispositivo.
+        Creare un piccolo form post-login (solo per i nuovi utenti) per inserire il nome.
 
-Fase G: Mobile Build
+FASE 2: Motore Calendario e Condivisione (Backend)
 
-    [ ] Setup di Capacitor (se usi Refine) o Expo Build.
+    [ ] Calendar-Service (Entità e DTO):
 
-    [ ] Generazione del file .apk.
+        Aggiornare il modello Evento per includere il flag booleano tuttoIlGiorno (all-day).
 
-    [ ] Test su dispositivo fisico.
+        Assicurarsi che i campi siano: titolo (obbligatorio), descrizione (opzionale), dataInizio, dataFine, tuttoIlGiorno.
 
-Da dove iniziamo? Vuoi che ti aiuti a configurare Swagger per documentare le API o preferisci preparare il Gateway per i CORS?
+    [ ] Sistema di Condivisione (Logica "Join by Code"):
+
+        Creare entità CalendarioCondiviso.
+
+        Endpoint per generare un codice alfanumerico univoco (es. JD7F-9K2A).
+
+        Endpoint per "Unisciti al calendario" tramite inserimento codice.
+
+    [ ] Query di separazione:
+
+        Logica per recuperare gli eventi di oggi separati in due flussi: "Eventi Privati" ed "Eventi Condivisi". (Nessun avviso di conflitto tra i due).
+
+FASE 3: UX/UI e Interattività (Frontend)
+
+    [ ] Dashboard Odierna (HomeScreen):
+
+        Implementare lo Swipeable Pager (Carousel) orizzontale.
+
+        Pagina 1: Eventi Privati. Indicatori a pallini (primo acceso). Atmosfera colori base (viola profondo).
+
+        Pagina 2: Eventi Condivisi. Indicatori a pallini (secondo acceso). Cambio di atmosfera dinamico (es. tonalità più calde o blu notte) tramite Glassmorfismo.
+
+    [ ] Calendario Mensile (Navbar):
+
+        Aggiungere la Bottom Navbar con le icone (Home, Calendario, Condivisione).
+
+        Sviluppare la griglia mensile classica a 30/31 giorni.
+
+    [ ] Gestione Eventi (CRUD):
+
+        Cliccando su un giorno (dal mese) o dal tasto "+" (nella Home), aprire un modale di creazione/modifica.
+
+        Form: Titolo, Descrizione, Data/Ora (o spunta "Tutto il giorno").
+
+        Tasti azione: Salva, Modifica, Elimina.
+
+FASE 4: Notifiche Asincrone
+
+    [ ] RabbitMQ + Notification-Service:
+
+        Configurare l'exchange per reagire ad azioni specifiche (es. "Nuovo evento aggiunto al calendario condiviso").
+
+        Preparare i log/alert lato Notification-Service. (Agent-Service rimane in sospeso).
+
+FASE 5: Infrastruttura e Deployment (Cloud)
+
+    [ ] Setup Oracle Cloud Free Tier:
+
+        Creare e configurare la Virtual Machine (Architettura ARM64, 24GB RAM).
+
+        Aprire le porte di rete necessarie nel firewall Oracle.
+
+    [ ] Containerizzazione Multi-Architettura:
+
+        Compilare le immagini Docker di Spring Boot specificando la piattaforma ARM (--platform linux/arm64) per garantirne il funzionamento su Oracle.
+
+    [ ] Deployment:
+
+        Installare Docker e Docker Compose sulla VM Oracle.
+
+        Creare un tunnel (es. Cloudflare) per un indirizzo HTTPS fisso.
+
+        Lanciare docker compose up -d sul server di produzione.
+
+FASE 6: Distribuzione
+
+    [ ] Generare il file .apk finale per Android tramite Expo.
+
+    [ ] Installazione manuale sui dispositivi di destinazione

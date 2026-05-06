@@ -8,7 +8,7 @@ import lombok.Setter;
 import java.util.UUID;
 
 @Entity
-@Table(name = "inviti")
+@Table(name = "inviti", schema = "calendar_schema") // <-- SCHEMA AGGIUNTO
 @Getter
 @Setter
 @NoArgsConstructor
